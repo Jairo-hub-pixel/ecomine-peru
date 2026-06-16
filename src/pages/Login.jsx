@@ -7,29 +7,39 @@ import "./Login.css";
 export default function Login(){
 
 
+const [modo,setModo]=useState("login");
+
+
+const [nombre,setNombre]=useState("");
+
 const [email,setEmail]=useState("");
 
 const [password,setPassword]=useState("");
 
-const {login}=useAuth();
+
+const {login,register}=useAuth();
 
 const navigate=useNavigate();
 
 
 
-const entrar=(e)=>{
+
+
+const enviar=(e)=>{
 
 
 e.preventDefault();
 
 
 
-const valido =
-login(email,password);
+if(modo==="login"){
+
+
+const ok = login(email,password);
 
 
 
-if(valido){
+if(ok){
 
 navigate("/");
 
@@ -37,12 +47,39 @@ navigate("/");
 
 else{
 
-alert("Usuario o contraseña incorrectos");
+alert("Datos incorrectos");
+
+}
+
+
+
+}else{
+
+
+const ok = register(
+nombre,
+email,
+password
+);
+
+
+
+if(ok){
+
+alert("Cuenta creada");
+
+setModo("login");
+
+}
+
+
 
 }
 
 
 };
+
+
 
 
 
@@ -55,28 +92,44 @@ return(
 <div className="login-card">
 
 
+
 <h1>
-EcoMine Perú
+🌳 EcoMine Perú
 </h1>
 
 
+
 <p>
-Sistema de monitoreo ambiental
+Sistema ambiental
 </p>
 
 
 
-<form onSubmit={entrar}>
+
+<form onSubmit={enviar}>
 
 
-<label>
-Correo
-</label>
+{modo==="registro" && (
+
+<input
+
+placeholder="Nombre"
+
+value={nombre}
+
+onChange={
+e=>setNombre(e.target.value)
+}
+
+/>
+
+)}
+
 
 
 <input
 
-type="email"
+placeholder="Correo"
 
 value={email}
 
@@ -88,15 +141,12 @@ e=>setEmail(e.target.value)
 
 
 
-<label>
-Contraseña
-</label>
-
-
 
 <input
 
 type="password"
+
+placeholder="Contraseña"
 
 value={password}
 
@@ -108,14 +158,56 @@ e=>setPassword(e.target.value)
 
 
 
+
 <button>
 
-Ingresar
+{
+modo==="login"
+?
+"Iniciar sesión"
+:
+"Crear cuenta"
+}
 
 </button>
 
 
+
 </form>
+
+
+
+
+<button
+
+className="cambiar"
+
+onClick={()=>
+
+setModo(
+modo==="login"
+?
+"registro"
+:
+"login"
+)
+
+}
+
+>
+
+
+{
+modo==="login"
+?
+"Crear cuenta nueva"
+:
+"Ya tengo cuenta"
+}
+
+
+</button>
+
 
 
 </div>
@@ -125,6 +217,5 @@ Ingresar
 
 
 );
-
 
 }

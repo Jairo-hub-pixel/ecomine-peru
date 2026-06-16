@@ -1,101 +1,203 @@
-import { createContext, useContext, useState } from "react";
-
-const AuthContext = createContext();
+import { createContext,useContext,useState } from "react";
 
 
-export function AuthProvider({ children }) {
-
-
-  const [user, setUser] = useState(() => {
-
-    const guardado =
-      localStorage.getItem("usuario");
-
-    return guardado
-      ? JSON.parse(guardado)
-      : null;
-
-  });
+const AuthContext=createContext();
 
 
 
-  const login = (email, password) => {
+export function AuthProvider({children}){
 
 
-    if (
-      email === "admin@ecomine.com" &&
-      password === "123456"
-    ) {
+const [user,setUser]=useState(
 
+JSON.parse(
+localStorage.getItem("usuario")
+)
 
-      const usuario = {
-
-        nombre: "Administrador",
-
-        email
-
-      };
-
-
-      setUser(usuario);
-
-
-      localStorage.setItem(
-        "usuario",
-        JSON.stringify(usuario)
-      );
-
-
-      return true;
-
-    }
-
-
-    return false;
-
-  };
+);
 
 
 
-  const logout = () => {
+const login=(email,password)=>{
 
 
-    setUser(null);
+const usuarios =
 
-
-    localStorage.removeItem(
-      "usuario"
-    );
-
-
-  };
+JSON.parse(
+localStorage.getItem("usuarios")
+)
+||
+[];
 
 
 
-  return (
+const encontrado = usuarios.find(
 
-    <AuthContext.Provider
+u=>
 
-      value={{
-        user,
-        login,
-        logout
-      }}
+u.email===email &&
+u.password===password
 
-    >
+);
 
-      {children}
 
-    </AuthContext.Provider>
 
-  );
+if(
+email==="admin@ecomine.com"
+&&
+password==="123456"
+){
+
+
+const admin={
+
+nombre:"Administrador",
+
+email
+
+};
+
+
+setUser(admin);
+
+localStorage.setItem(
+"usuario",
+JSON.stringify(admin)
+);
+
+
+return true;
 
 }
 
 
 
+if(encontrado){
+
+
+setUser(encontrado);
+
+
+localStorage.setItem(
+"usuario",
+JSON.stringify(encontrado)
+);
+
+
+return true;
+
+
+}
+
+
+
+return false;
+
+
+};
+
+
+
+
+
+
+const register=(nombre,email,password)=>{
+
+
+const usuarios =
+
+JSON.parse(
+localStorage.getItem("usuarios")
+)
+||
+[];
+
+
+
+usuarios.push({
+
+nombre,
+
+email,
+
+password
+
+});
+
+
+
+localStorage.setItem(
+
+"usuarios",
+
+JSON.stringify(usuarios)
+
+);
+
+
+
+return true;
+
+
+};
+
+
+
+
+
+const logout=()=>{
+
+
+setUser(null);
+
+
+localStorage.removeItem(
+"usuario"
+);
+
+
+};
+
+
+
+
+
+return(
+
+<AuthContext.Provider
+
+value={{
+
+user,
+
+login,
+
+register,
+
+logout
+
+}}
+
+>
+
+
+{children}
+
+
+</AuthContext.Provider>
+
+
+);
+
+
+}
+
+
+
+
+
 export function useAuth(){
 
-  return useContext(AuthContext);
+return useContext(AuthContext);
 
 }
