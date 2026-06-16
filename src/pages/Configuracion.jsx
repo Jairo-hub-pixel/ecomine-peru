@@ -1,4 +1,45 @@
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+
 export default function Configuracion() {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const cerrarSesion = () => {
+    logout();
+    navigate("/login");
+  };
+
+  const eliminarCuenta = () => {
+    if (!window.confirm("¿Estás seguro de eliminar tu cuenta?")) {
+      return;
+    }
+
+    // No permitir borrar la cuenta admin
+    if (user?.email === "admin@ecomine.com") {
+      alert("La cuenta administrador no puede eliminarse.");
+      return;
+    }
+
+    const usuarios =
+      JSON.parse(localStorage.getItem("usuarios")) || [];
+
+    const usuariosActualizados = usuarios.filter(
+      (u) => u.email !== user.email
+    );
+
+    localStorage.setItem(
+      "usuarios",
+      JSON.stringify(usuariosActualizados)
+    );
+
+    logout();
+
+    alert("Cuenta eliminada correctamente");
+
+    navigate("/login");
+  };
+
   return (
     <div className="p-8">
       <h1 className="text-4xl font-bold text-gray-800 mb-2">
@@ -17,20 +58,22 @@ export default function Configuracion() {
 
         <div className="flex items-center gap-4">
           <div className="w-14 h-14 rounded-full bg-blue-500 text-white flex items-center justify-center text-xl font-bold">
-            J
+            {user?.nombre?.charAt(0).toUpperCase() || "U"}
           </div>
 
           <div>
             <h3 className="font-bold text-lg">
-              Jairo Joel Escurra Arias
+              {user?.nombre}
             </h3>
 
             <p className="text-gray-500">
-              ejairojoel@gmail.com
+              {user?.email}
             </p>
 
             <span className="text-sm text-gray-400">
-              Administrador
+              {user?.email === "admin@ecomine.com"
+                ? "Administrador"
+                : "Usuario"}
             </span>
           </div>
         </div>
@@ -42,7 +85,10 @@ export default function Configuracion() {
           Sesión
         </h2>
 
-        <button className="w-full border border-blue-500 text-blue-500 py-3 rounded-xl hover:bg-blue-50">
+        <button
+          onClick={cerrarSesion}
+          className="w-full border border-blue-500 text-blue-500 py-3 rounded-xl hover:bg-blue-50"
+        >
           🚪 Cerrar sesión
         </button>
       </div>
@@ -64,7 +110,10 @@ export default function Configuracion() {
             </p>
           </div>
 
-          <button className="bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-lg">
+          <button
+            onClick={eliminarCuenta}
+            className="bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-lg"
+          >
             Eliminar mi cuenta
           </button>
         </div>
