@@ -1,203 +1,183 @@
-import { createContext,useContext,useState } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect
+} from "react";
 
+import {
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+  signOut,
+  onAuthStateChanged,
+  updateProfile,
+  GoogleAuthProvider,
+  signInWithPopup
+} from "firebase/auth";
 
-const AuthContext=createContext();
+import { auth } from "../firebase";
 
+const AuthContext = createContext();
 
+export function AuthProvider({ children }) {
 
-export function AuthProvider({children}){
+  const [user, setUser] = useState(null);
 
+  useEffect(() => {
 
-const [user,setUser]=useState(
+    const unsubscribe = onAuthStateChanged(
+      auth,
+      (usuario) => {
 
-JSON.parse(
-localStorage.getItem("usuario")
-)
+        if (usuario) {
 
-);
+          setUser({
+            nombre: usuario.displayName,
+            email: usuario.email,
+            verificado: usuario.emailVerified
+          });
 
+        } else {
 
+          setUser(null);
 
-const login=(email,password)=>{
+        }
 
+      }
+    );
 
-const usuarios =
+    return () => unsubscribe();
 
-JSON.parse(
-localStorage.getItem("usuarios")
-)
-||
-[];
+  }, []);
 
+  const login = async (email, password) => {
 
+    try {
 
-const encontrado = usuarios.find(
+      const credenciales =
+        await signInWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
 
-u=>
+      if (!credenciales.user.emailVerified) {
 
-u.email===email &&
-u.password===password
+        alert(
+          "Debes verificar tu correo antes de iniciar sesión."
+        );
 
-);
+        await signOut(auth);
 
+        return false;
+      }
 
+      return true;
 
-if(
-email==="admin@ecomine.com"
-&&
-password==="123456"
-){
+    } catch (error) {
 
+      console.error(error);
 
-const admin={
+      return false;
 
-nombre:"Administrador",
+    }
 
-email
+  };
 
-};
+  const register = async (
+    nombre,
+    email,
+    password
+  ) => {
 
+    try {
 
-setUser(admin);
+      const credenciales =
+        await createUserWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
 
-localStorage.setItem(
-"usuario",
-JSON.stringify(admin)
-);
+      await updateProfile(
+        credenciales.user,
+        {
+          displayName: nombre
+        }
+      );
 
+      await sendEmailVerification(
+        credenciales.user
+      );
 
-return true;
+      alert(
+        "Cuenta creada. Revisa tu correo para verificarla."
+      );
+
+      await signOut(auth);
+
+      return true;
+
+    } catch (error) {
+
+      console.error(error);
+
+      alert(error.message);
+
+      return false;
+
+    }
+
+  };
+
+  const loginGoogle = async () => {
+
+    try {
+
+      const provider = new GoogleAuthProvider();
+
+      await signInWithPopup(
+        auth,
+        provider
+      );
+
+      return true;
+
+    } catch (error) {
+
+      console.error(error);
+
+      return false;
+
+    }
+
+  };
+
+  const logout = async () => {
+
+    await signOut(auth);
+
+    setUser(null);
+
+  };
+
+  return (
+    <AuthContext.Provider
+      value={{
+        user,
+        login,
+        register,
+        logout,
+        loginGoogle
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
 
 }
 
-
-
-if(encontrado){
-
-
-setUser(encontrado);
-
-
-localStorage.setItem(
-"usuario",
-JSON.stringify(encontrado)
-);
-
-
-return true;
-
-
-}
-
-
-
-return false;
-
-
-};
-
-
-
-
-
-
-const register=(nombre,email,password)=>{
-
-
-const usuarios =
-
-JSON.parse(
-localStorage.getItem("usuarios")
-)
-||
-[];
-
-
-
-usuarios.push({
-
-nombre,
-
-email,
-
-password
-
-});
-
-
-
-localStorage.setItem(
-
-"usuarios",
-
-JSON.stringify(usuarios)
-
-);
-
-
-
-return true;
-
-
-};
-
-
-
-
-
-const logout=()=>{
-
-
-setUser(null);
-
-
-localStorage.removeItem(
-"usuario"
-);
-
-
-};
-
-
-
-
-
-return(
-
-<AuthContext.Provider
-
-value={{
-
-user,
-
-login,
-
-register,
-
-logout
-
-}}
-
->
-
-
-{children}
-
-
-</AuthContext.Provider>
-
-
-);
-
-
-}
-
-
-
-
-
-export function useAuth(){
-
-return useContext(AuthContext);
-
+export function useAuth() {
+  return useContext(AuthContext);
 }

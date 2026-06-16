@@ -12,8 +12,6 @@ background:#f1f5f9;
 
 }
 
-
-
 .login-card{
 
 background:white;
@@ -28,17 +26,15 @@ box-shadow:0 10px 30px rgba(0,0,0,.12);
 
 }
 
-
-
 .login-card h1{
 
 text-align:center;
 
 color:#16a34a;
 
+margin-bottom:10px;
+
 }
-
-
 
 .login-card p{
 
@@ -46,9 +42,9 @@ text-align:center;
 
 color:#6b7280;
 
+margin-bottom:20px;
+
 }
-
-
 
 .login-card label{
 
@@ -60,29 +56,27 @@ font-weight:600;
 
 }
 
-
-
 .login-card input{
 
 width:100%;
 
 padding:12px;
 
-margin-top:6px;
+margin-top:10px;
 
 border:1px solid #ddd;
 
 border-radius:10px;
 
+box-sizing:border-box;
+
 }
-
-
 
 .login-card button{
 
 width:100%;
 
-margin-top:25px;
+margin-top:20px;
 
 padding:13px;
 
@@ -95,5 +89,67 @@ border:none;
 border-radius:10px;
 
 cursor:pointer;
+
+font-weight:600;
+
+transition:.3s;
+
+}
+
+.login-card button:hover{
+
+background:#15803d;
+
+}
+
+.google-btn{
+
+width:100%;
+
+margin-top:10px;
+
+padding:13px;
+
+background:#ffffff !important;
+
+color:#333 !important;
+
+border:1px solid #ddd !important;
+
+border-radius:10px;
+
+cursor:pointer;
+
+font-weight:600;
+
+transition:.3s;
+
+}
+
+.google-btn:hover{
+
+background:#f5f5f5 !important;
+
+}
+
+.cambiar{
+
+background:none !important;
+
+color:#16a34a !important;
+
+border:none !important;
+
+margin-top:15px !important;
+
+box-shadow:none !important;
+
+}
+
+.cambiar:hover{
+
+text-decoration:underline;
+
+background:none !important;
 
 }

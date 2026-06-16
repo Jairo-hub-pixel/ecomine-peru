@@ -3,219 +3,175 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import "./Login.css";
 
+export default function Login() {
 
-export default function Login(){
+  const [modo, setModo] = useState("login");
 
+  const [nombre, setNombre] = useState("");
 
-const [modo,setModo]=useState("login");
+  const [email, setEmail] = useState("");
 
+  const [password, setPassword] = useState("");
 
-const [nombre,setNombre]=useState("");
+  const { login, register, loginGoogle } = useAuth();
 
-const [email,setEmail]=useState("");
+  const navigate = useNavigate();
 
-const [password,setPassword]=useState("");
+  const ingresarGoogle = async () => {
 
+    const ok = await loginGoogle();
 
-const {login,register}=useAuth();
+    if (ok) {
 
-const navigate=useNavigate();
+      navigate("/");
 
+    }
 
+  };
 
+  const enviar = async (e) => {
 
+    e.preventDefault();
 
-const enviar=(e)=>{
+    if (modo === "login") {
 
+      const ok = await login(
+        email,
+        password
+      );
 
-e.preventDefault();
+      if (ok) {
 
+        navigate("/");
 
+      } else {
 
-if(modo==="login"){
+        alert(
+          "Correo o contraseña incorrectos, o correo no verificado."
+        );
 
+      }
 
-const ok = login(email,password);
+    } else {
 
+      const ok = await register(
+        nombre,
+        email,
+        password
+      );
 
+      if (ok) {
 
-if(ok){
+        alert(
+          "Cuenta creada correctamente. Revisa tu Gmail para verificar tu cuenta."
+        );
 
-navigate("/");
+        setModo("login");
 
-}
+        setNombre("");
 
-else{
+        setEmail("");
 
-alert("Datos incorrectos");
+        setPassword("");
 
-}
+      }
 
+    }
 
+  };
 
-}else{
+  return (
 
+    <div className="login-container">
 
-const ok = register(
-nombre,
-email,
-password
-);
+      <div className="login-card">
 
+        <h1>
+          🌳 EcoMine Perú
+        </h1>
 
+        <p>
+          Sistema ambiental
+        </p>
 
-if(ok){
+        <form onSubmit={enviar}>
 
-alert("Cuenta creada");
+          {
+            modo === "registro" && (
 
-setModo("login");
-
-}
-
-
-
-}
-
-
-};
-
-
-
-
-
-return(
-
-
-<div className="login-container">
-
-
-<div className="login-card">
-
-
-
-<h1>
-🌳 EcoMine Perú
-</h1>
-
-
-
-<p>
-Sistema ambiental
-</p>
-
-
-
-
-<form onSubmit={enviar}>
-
-
-{modo==="registro" && (
-
-<input
-
-placeholder="Nombre"
-
-value={nombre}
-
-onChange={
-e=>setNombre(e.target.value)
-}
-
-/>
-
-)}
-
-
-
-<input
-
-placeholder="Correo"
-
-value={email}
-
-onChange={
-e=>setEmail(e.target.value)
-}
-
-/>
-
-
-
-
-<input
-
-type="password"
-
-placeholder="Contraseña"
-
-value={password}
-
-onChange={
-e=>setPassword(e.target.value)
-}
-
-/>
-
-
-
-
-<button>
-
-{
-modo==="login"
-?
-"Iniciar sesión"
-:
-"Crear cuenta"
-}
-
-</button>
-
-
-
-</form>
-
-
-
-
-<button
-
-className="cambiar"
-
-onClick={()=>
-
-setModo(
-modo==="login"
-?
-"registro"
-:
-"login"
-)
-
-}
-
->
-
-
-{
-modo==="login"
-?
-"Crear cuenta nueva"
-:
-"Ya tengo cuenta"
-}
-
-
-</button>
-
-
-
-</div>
-
-
-</div>
-
-
-);
+              <input
+                type="text"
+                placeholder="Nombre completo"
+                value={nombre}
+                onChange={(e) => setNombre(e.target.value)}
+                required
+              />
+
+            )
+          }
+
+          <input
+            type="email"
+            placeholder="Correo electrónico"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+
+          <input
+            type="password"
+            placeholder="Contraseña"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+
+          <button type="submit">
+
+            {
+              modo === "login"
+                ? "Iniciar sesión"
+                : "Crear cuenta"
+            }
+
+          </button>
+
+        </form>
+
+        <button
+          type="button"
+          className="google-btn"
+          onClick={ingresarGoogle}
+        >
+          🔵 Iniciar sesión con Google
+        </button>
+
+        <button
+
+          className="cambiar"
+
+          onClick={() =>
+            setModo(
+              modo === "login"
+                ? "registro"
+                : "login"
+            )
+          }
+
+        >
+
+          {
+            modo === "login"
+              ? "Crear cuenta nueva"
+              : "Ya tengo cuenta"
+          }
+
+        </button>
+
+      </div>
+
+    </div>
+
+  );
 
 }
