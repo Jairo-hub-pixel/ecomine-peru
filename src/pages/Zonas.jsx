@@ -1,165 +1,173 @@
 import { useState } from "react";
-import { FaHeart, FaEdit, FaTrash } from "react-icons/fa";
+import ModalZona from "../components/ModalZona";
+import "./Zonas.css";
 
 export default function Zonas() {
+
+  const [mostrarModal, setMostrarModal] = useState(false);
+
+  const [buscar, setBuscar] = useState("");
+
   const [zonas, setZonas] = useState([
     {
-      id: 1,
-      nombre: "Cuenca del Santiago",
-      region: "Amazonas",
-      coordenadas: "-4.0000, -77.8000",
-      fecha: "19/01/2026",
-      riesgo: "Bajo",
-      favorito: false,
-    },
+      id:1,
+      nombre:"Zona Principal",
+      ubicacion:"Perú",
+      estado:"Activo"
+    }
   ]);
 
-  const nuevaZona = () => {
-    const nombre = prompt("Nombre de la zona");
 
-    if (!nombre) return;
+  const agregarZona = (nuevaZona) => {
 
     setZonas([
       ...zonas,
-      {
-        id: Date.now(),
-        nombre,
-        region: "Amazonas",
-        coordenadas: "-4.0000, -77.8000",
-        fecha: new Date().toLocaleDateString(),
-        riesgo: "Bajo",
-        favorito: false,
-      },
+      nuevaZona
     ]);
+
   };
 
-  const eliminarZona = (id) => {
-    setZonas(zonas.filter((z) => z.id !== id));
-  };
 
-  const favoritoZona = (id) => {
-    setZonas(
-      zonas.map((z) =>
-        z.id === id
-          ? { ...z, favorito: !z.favorito }
-          : z
-      )
-    );
-  };
+  const zonasFiltradas = zonas.filter((zona)=>
+
+    zona.nombre
+    .toLowerCase()
+    .includes(buscar.toLowerCase())
+
+  );
+
 
   return (
-    <div className="space-y-6">
 
-      <div className="flex justify-between items-center">
+    <div className="dashboard">
+
+
+      <div className="zona-header">
 
         <div>
-          <h1 className="text-4xl font-bold">
-            Zonas Afectadas
-          </h1>
 
-          <p className="text-gray-500">
-            Registro y gestión de zonas de minería ilegal
+          <h1>Zonas</h1>
+
+          <p>
+            Gestión de zonas mineras registradas
           </p>
+
         </div>
 
+
         <button
-          onClick={nuevaZona}
-          className="bg-green-600 text-white px-5 py-3 rounded-xl"
+          onClick={()=>setMostrarModal(true)}
         >
           + Nueva Zona
         </button>
 
-      </div>
-
-      <div className="bg-white rounded-2xl shadow overflow-hidden">
-
-        <table className="w-full">
-
-          <thead className="bg-gray-50">
-
-            <tr>
-              <th className="text-left p-4">Zona</th>
-              <th className="text-left p-4">Región</th>
-              <th className="text-left p-4">Coordenadas</th>
-              <th className="text-left p-4">Fecha</th>
-              <th className="text-left p-4">Riesgo</th>
-              <th className="text-left p-4"></th>
-              <th className="text-left p-4">Acciones</th>
-            </tr>
-
-          </thead>
-
-          <tbody>
-
-            {zonas.map((z) => (
-              <tr
-                key={z.id}
-                className="border-t hover:bg-gray-50"
-              >
-                <td className="p-4 font-medium">
-                  {z.nombre}
-                </td>
-
-                <td className="p-4">
-                  {z.region}
-                </td>
-
-                <td className="p-4 font-mono text-sm">
-                  {z.coordenadas}
-                </td>
-
-                <td className="p-4">
-                  {z.fecha}
-                </td>
-
-                <td className="p-4">
-
-                  <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm">
-                    Riesgo Bajo
-                  </span>
-
-                </td>
-
-                <td className="p-4">
-
-                  <button
-                    onClick={() =>
-                      favoritoZona(z.id)
-                    }
-                  >
-                    <FaHeart
-                      className={
-                        z.favorito
-                          ? "text-red-500"
-                          : "text-gray-300"
-                      }
-                    />
-                  </button>
-
-                </td>
-
-                <td className="p-4 flex gap-4">
-
-                  <FaEdit className="cursor-pointer text-gray-600" />
-
-                  <FaTrash
-                    onClick={() =>
-                      eliminarZona(z.id)
-                    }
-                    className="cursor-pointer text-red-500"
-                  />
-
-                </td>
-
-              </tr>
-            ))}
-
-          </tbody>
-
-        </table>
 
       </div>
+
+
+
+      <div className="zona-info">
+
+        <div className="info-card">
+
+          <h2>
+            {zonas.length}
+          </h2>
+
+          <p>
+            Total de zonas
+          </p>
+
+        </div>
+
+      </div>
+
+
+
+
+      <input
+
+        className="buscador"
+
+        placeholder="Buscar zona..."
+
+        value={buscar}
+
+        onChange={(e)=>setBuscar(e.target.value)}
+
+      />
+
+
+
+
+
+      <div className="zonas-grid">
+
+
+        {zonasFiltradas.map((zona)=>(
+
+
+          <div 
+            className="zona-card"
+            key={zona.id}
+          >
+
+
+            <h3>
+              {zona.nombre}
+            </h3>
+
+
+            <p>
+              📍 {zona.ubicacion}
+            </p>
+
+
+
+            <span 
+              className={
+                zona.estado==="Activo"
+                ?
+                "estado activo"
+                :
+                "estado inactivo"
+              }
+            >
+
+              {zona.estado}
+
+            </span>
+
+
+
+          </div>
+
+
+        ))}
+
+
+      </div>
+
+
+
+
+
+      {mostrarModal &&
+
+        <ModalZona
+
+          cerrar={()=>setMostrarModal(false)}
+
+          agregarZona={agregarZona}
+
+        />
+
+      }
+
+
 
     </div>
+
   );
+
 }

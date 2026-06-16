@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { FaTrash } from "react-icons/fa";
+import "./Monitoreo.css";
 
 export default function Monitoreo() {
+
   const [datos, setDatos] = useState([
     {
       id: 1,
@@ -25,290 +27,342 @@ export default function Monitoreo() {
     },
     {
       id: 3,
-      zona: "Zona desconocida",
+      zona: "Zona amazónica",
       fecha: "30/04/2026",
-      agua: "15%",
-      aire: "30%",
-      mercurio: "0.88 ppm",
-      deforestacion: "280 ha",
-      temperatura: "27.9°C",
-    },
-    {
-      id: 4,
-      zona: "Zona desconocida",
-      fecha: "19/04/2026",
-      agua: "28%",
-      aire: "42%",
-      mercurio: "1.35 ppm",
-      deforestacion: "18 ha",
-      temperatura: "4.8°C",
-    },
-    {
-      id: 5,
-      zona: "Zona desconocida",
-      fecha: "14/04/2026",
-      agua: "50%",
-      aire: "60%",
-      mercurio: "0.42 ppm",
-      deforestacion: "35.5 ha",
-      temperatura: "31°C",
-    },
-    {
-      id: 6,
-      zona: "Zona desconocida",
-      fecha: "09/04/2026",
       agua: "60%",
       aire: "70%",
       mercurio: "0.15 ppm",
       deforestacion: "12 ha",
       temperatura: "26.5°C",
     },
-    {
-      id: 7,
-      zona: "Zona desconocida",
-      fecha: "31/03/2026",
-      agua: "18%",
-      aire: "32%",
-      mercurio: "0.75 ppm",
-      deforestacion: "250 ha",
-      temperatura: "28.5°C",
-    },
-    {
-      id: 8,
-      zona: "Zona desconocida",
-      fecha: "31/03/2026",
-      agua: "22%",
-      aire: "38%",
-      mercurio: "0.92 ppm",
-      deforestacion: "135.2 ha",
-      temperatura: "29.1°C",
-    },
   ]);
+
 
   const [paginaActual, setPaginaActual] = useState(1);
 
   const registrosPorPagina = 5;
 
+
   const ultimoRegistro =
     paginaActual * registrosPorPagina;
+
 
   const primerRegistro =
     ultimoRegistro - registrosPorPagina;
 
-  const datosActuales = datos.slice(
-    primerRegistro,
-    ultimoRegistro
-  );
 
-  const totalPaginas = Math.ceil(
-    datos.length / registrosPorPagina
-  );
+  const datosActuales =
+    datos.slice(
+      primerRegistro,
+      ultimoRegistro
+    );
 
-  const eliminar = (id) => {
-    setDatos(datos.filter((d) => d.id !== id));
+
+  const totalPaginas =
+    Math.ceil(
+      datos.length / registrosPorPagina
+    );
+
+
+
+  const eliminar = (id)=>{
+
+    setDatos(
+      datos.filter(
+        (d)=>d.id !== id
+      )
+    );
+
   };
 
-  const nuevoRegistro = () => {
+
+
+  const nuevoRegistro = ()=>{
+
     const zona = prompt("Ingrese la zona");
 
-    if (!zona) return;
+
+    if(!zona) return;
+
 
     setDatos([
+
       {
         id: Date.now(),
         zona,
-        fecha: new Date().toLocaleDateString(),
-        agua: "70%",
-        aire: "75%",
-        mercurio: "0.05 ppm",
-        deforestacion: "5 ha",
-        temperatura: "25°C",
+        fecha:new Date().toLocaleDateString(),
+        agua:"70%",
+        aire:"75%",
+        mercurio:"0.05 ppm",
+        deforestacion:"5 ha",
+        temperatura:"25°C"
       },
-      ...datos,
+
+      ...datos
+
     ]);
+
   };
 
-  const exportarCSV = () => {
+
+
+  const exportarCSV = ()=>{
+
     const encabezado =
-      "Zona,Fecha,Agua,Aire,Mercurio,Deforestacion,Temperatura\n";
+    "Zona,Fecha,Agua,Aire,Mercurio,Deforestacion,Temperatura\n";
 
-    const filas = datos
-      .map(
-        (d) =>
-          `${d.zona},${d.fecha},${d.agua},${d.aire},${d.mercurio},${d.deforestacion},${d.temperatura}`
-      )
-      .join("\n");
 
-    const csv = encabezado + filas;
+    const filas =
+    datos.map((d)=>
+    `${d.zona},${d.fecha},${d.agua},${d.aire},${d.mercurio},${d.deforestacion},${d.temperatura}`
+    )
+    .join("\n");
 
-    const blob = new Blob([csv], {
-      type: "text/csv",
-    });
 
-    const url = URL.createObjectURL(blob);
+    const blob =
+    new Blob(
+      [encabezado + filas],
+      {type:"text/csv"}
+    );
 
-    const a = document.createElement("a");
 
-    a.href = url;
-    a.download = "monitoreo.csv";
+    const url =
+    URL.createObjectURL(blob);
+
+
+    const a =
+    document.createElement("a");
+
+
+    a.href=url;
+
+    a.download="monitoreo.csv";
+
     a.click();
+
   };
+
+
 
   return (
-    <div className="space-y-6">
 
-      <div className="flex justify-between items-center">
+    <div className="monitoreo">
+
+
+      <div className="monitoreo-header">
 
         <div>
-          <h1 className="text-4xl font-bold">
+
+          <h1>
             Monitoreo Ambiental
           </h1>
 
-          <p className="text-gray-500">
+          <p>
             Registro de indicadores ambientales por zona
           </p>
+
         </div>
 
-        <div className="flex gap-3">
+
+        <div className="botones">
+
 
           <button
+            className="btn-exportar"
             onClick={exportarCSV}
-            className="border px-5 py-3 rounded-xl"
           >
             Exportar CSV
           </button>
 
+
+
           <button
+            className="btn-nuevo"
             onClick={nuevoRegistro}
-            className="bg-green-600 text-white px-5 py-3 rounded-xl"
           >
             + Nuevo Registro
           </button>
 
+
         </div>
+
 
       </div>
 
-      <div className="bg-white rounded-2xl shadow overflow-hidden">
 
-        <table className="w-full">
 
-          <thead className="bg-gray-50">
+      <div className="indicadores">
+
+
+        <div className="indicador-card">
+          <h2>💧 Agua</h2>
+          <p>{datos[0].agua}</p>
+          <span>Calidad registrada</span>
+        </div>
+
+
+        <div className="indicador-card">
+          <h2>🌬️ Aire</h2>
+          <p>{datos[0].aire}</p>
+          <span>Nivel ambiental</span>
+        </div>
+
+
+        <div className="indicador-card">
+          <h2>☣️ Mercurio</h2>
+          <p>{datos[0].mercurio}</p>
+          <span>Contaminación</span>
+        </div>
+
+
+        <div className="indicador-card">
+          <h2>🌡️ Temperatura</h2>
+          <p>{datos[0].temperatura}</p>
+          <span>Registro actual</span>
+        </div>
+
+
+      </div>
+
+
+
+
+
+      <div className="tabla-container">
+
+
+        <table>
+
+
+          <thead>
 
             <tr>
-              <th className="p-4 text-left">Zona</th>
-              <th className="p-4 text-left">Fecha</th>
-              <th className="p-4 text-left">Agua</th>
-              <th className="p-4 text-left">Aire</th>
-              <th className="p-4 text-left">Mercurio</th>
-              <th className="p-4 text-left">Deforest.</th>
-              <th className="p-4 text-left">Temp.</th>
-              <th className="p-4 text-left">Acciones</th>
+
+              <th>Zona</th>
+              <th>Fecha</th>
+              <th>Agua</th>
+              <th>Aire</th>
+              <th>Mercurio</th>
+              <th>Deforest.</th>
+              <th>Temp.</th>
+              <th>Acción</th>
+
             </tr>
 
           </thead>
 
+
+
           <tbody>
 
-            {datosActuales.map((d) => (
 
-              <tr
-                key={d.id}
-                className="border-t hover:bg-gray-50"
-              >
+          {datosActuales.map((d)=>(
 
-                <td className="p-4 font-medium">
-                  {d.zona}
-                </td>
 
-                <td className="p-4">
-                  {d.fecha}
-                </td>
+            <tr key={d.id}>
 
-                <td className="p-4">
-                  🔴 {d.agua}
-                </td>
 
-                <td className="p-4">
-                  🔴 {d.aire}
-                </td>
+              <td>{d.zona}</td>
 
-                <td className="p-4">
-                  {d.mercurio}
-                </td>
+              <td>{d.fecha}</td>
 
-                <td className="p-4">
-                  {d.deforestacion}
-                </td>
+              <td>{d.agua}</td>
 
-                <td className="p-4">
-                  {d.temperatura}
-                </td>
+              <td>{d.aire}</td>
 
-                <td className="p-4">
-                  <FaTrash
-                    onClick={() => eliminar(d.id)}
-                    className="cursor-pointer text-red-500"
-                  />
-                </td>
+              <td>{d.mercurio}</td>
 
-              </tr>
+              <td>{d.deforestacion}</td>
 
-            ))}
+              <td>{d.temperatura}</td>
+
+
+              <td>
+
+                <FaTrash
+                  onClick={()=>eliminar(d.id)}
+                  className="delete"
+                />
+
+              </td>
+
+
+            </tr>
+
+
+          ))}
+
 
           </tbody>
 
+
         </table>
 
-        <div className="flex justify-center gap-2 py-5">
+
+
+
+
+        <div className="paginacion">
+
 
           <button
-            onClick={() =>
-              setPaginaActual((prev) =>
-                Math.max(prev - 1, 1)
+            onClick={()=>
+              setPaginaActual(
+                Math.max(paginaActual-1,1)
               )
             }
-            className="px-4 py-2 border rounded"
           >
             Anterior
           </button>
 
+
+
           {[...Array(totalPaginas)].map(
-            (_, index) => (
+            (_,i)=>(
+
               <button
-                key={index}
-                onClick={() =>
-                  setPaginaActual(index + 1)
+                key={i}
+                onClick={()=>
+                  setPaginaActual(i+1)
                 }
-                className={`px-4 py-2 rounded ${
-                  paginaActual === index + 1
-                    ? "bg-green-600 text-white"
-                    : "border"
-                }`}
+                className={
+                  paginaActual===i+1
+                  ?
+                  "pagina-activa"
+                  :
+                  ""
+                }
               >
-                {index + 1}
+                {i+1}
               </button>
+
             )
           )}
 
+
+
           <button
-            onClick={() =>
-              setPaginaActual((prev) =>
+            onClick={()=>
+              setPaginaActual(
                 Math.min(
-                  prev + 1,
+                  paginaActual+1,
                   totalPaginas
                 )
               )
             }
-            className="px-4 py-2 border rounded"
           >
             Siguiente
           </button>
 
+
         </div>
+
 
       </div>
 
+
     </div>
+
   );
+
 }

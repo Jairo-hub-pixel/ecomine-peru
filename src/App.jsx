@@ -1,76 +1,255 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import Sidebar from "./components/Sidebar";
+import { AuthProvider } from "./context/AuthContext";
 
+import ProtectedRoute from "./components/ProtectedRoute";
+
+import Layout from "./components/Layout";
+
+
+import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
+
 import Zonas from "./pages/Zonas";
 import Monitoreo from "./pages/Monitoreo";
-import Mapa from "./pages/Mapa";
-import Estadisticas from "./pages/Estadisticas";
 import Reportes from "./pages/Reportes";
 import Administracion from "./pages/Administracion";
+
 import Configuracion from "./pages/Configuracion";
+import Mapa from "./pages/Mapa";
+import Estadisticas from "./pages/Estadisticas";
 
-function App() {
+
+
+export default function App(){
+
+
   return (
-    <BrowserRouter>
-      <div className="flex min-h-screen bg-gray-100">
 
-        {/* Sidebar */}
-        <Sidebar />
 
-        {/* Contenido principal */}
-        <main className="flex-1 p-8">
+    <AuthProvider>
 
-          <Routes>
 
-            <Route
-              path="/"
-              element={<Dashboard />}
-            />
+      <BrowserRouter>
 
-            <Route
-              path="/zonas"
-              element={<Zonas />}
-            />
 
-            <Route
-              path="/monitoreo"
-              element={<Monitoreo />}
-            />
+        <Routes>
 
-            <Route
-              path="/mapa"
-              element={<Mapa />}
-            />
 
-            <Route
-              path="/estadisticas"
-              element={<Estadisticas />}
-            />
 
-            <Route
-              path="/reportes"
-              element={<Reportes />}
-            />
+          <Route
 
-            <Route
-              path="/administracion"
-              element={<Administracion />}
-            />
+            path="/login"
 
-            <Route
-              path="/configuracion"
-              element={<Configuracion />}
-            />
+            element={<Login/>}
 
-          </Routes>
+          />
 
-        </main>
 
-      </div>
-    </BrowserRouter>
+
+
+
+          <Route
+
+            path="/"
+
+            element={
+
+              <ProtectedRoute>
+
+                <Layout>
+
+                  <Dashboard/>
+
+                </Layout>
+
+              </ProtectedRoute>
+
+            }
+
+          />
+
+
+
+
+
+          <Route
+
+            path="/zonas"
+
+            element={
+
+              <ProtectedRoute>
+
+                <Layout>
+
+                  <Zonas/>
+
+                </Layout>
+
+              </ProtectedRoute>
+
+            }
+
+          />
+
+
+
+
+
+          <Route
+
+            path="/monitoreo"
+
+            element={
+
+              <ProtectedRoute>
+
+                <Layout>
+
+                  <Monitoreo/>
+
+                </Layout>
+
+              </ProtectedRoute>
+
+            }
+
+          />
+
+
+
+
+
+          <Route
+
+            path="/reportes"
+
+            element={
+
+              <ProtectedRoute>
+
+                <Layout>
+
+                  <Reportes/>
+
+                </Layout>
+
+              </ProtectedRoute>
+
+            }
+
+          />
+
+
+
+
+
+          <Route
+
+            path="/administracion"
+
+            element={
+
+              <ProtectedRoute>
+
+                <Layout>
+
+                  <Administracion/>
+
+                </Layout>
+
+              </ProtectedRoute>
+
+            }
+
+          />
+
+
+
+
+
+          <Route
+
+            path="/configuracion"
+
+            element={
+
+              <ProtectedRoute>
+
+                <Layout>
+
+                  <Configuracion/>
+
+                </Layout>
+
+              </ProtectedRoute>
+
+            }
+
+          />
+
+
+
+
+
+          <Route
+
+            path="/mapa"
+
+            element={
+
+              <ProtectedRoute>
+
+                <Layout>
+
+                  <Mapa/>
+
+                </Layout>
+
+              </ProtectedRoute>
+
+            }
+
+          />
+
+
+
+
+
+          <Route
+
+            path="/estadisticas"
+
+            element={
+
+              <ProtectedRoute>
+
+                <Layout>
+
+                  <Estadisticas/>
+
+                </Layout>
+
+              </ProtectedRoute>
+
+            }
+
+          />
+
+
+
+
+
+        </Routes>
+
+
+      </BrowserRouter>
+
+
+    </AuthProvider>
+
+
   );
-}
 
-export default App;
+}

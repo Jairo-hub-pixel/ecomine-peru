@@ -1,13 +1,19 @@
-export default function Configuracion() {
-  return (
-    <div>
-      <h1 className="text-4xl font-bold mb-6">
-        Configuración
-      </h1>
+export default function Configuracion(){
 
-      <div className="bg-white p-6 rounded-xl shadow">
-        Preferencias del sistema.
-      </div>
-    </div>
-  );
+return(
+
+<div className="p-10">
+
+<h1 className="text-4xl font-bold">
+Configuración
+</h1>
+
+<p>
+Configuración del sistema EcoMine Perú
+</p>
+
+</div>
+
+);
+
 }

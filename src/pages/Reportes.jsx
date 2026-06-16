@@ -1,276 +1,382 @@
 import { useState } from "react";
+import "./Reportes.css";
 
 export default function Reportes() {
+
+
   const [reportes, setReportes] = useState([
+
     {
-      id: 1,
-      zona: "Madre de Dios",
-      fecha: "15/06/2026",
-      estado: "Crítico",
-      hectareas: 350,
+      id:1,
+      zona:"Madre de Dios",
+      fecha:"15/06/2026",
+      estado:"Crítico",
+      hectareas:350
     },
+
     {
-      id: 2,
-      zona: "Loreto",
-      fecha: "12/06/2026",
-      estado: "Moderado",
-      hectareas: 120,
+      id:2,
+      zona:"Loreto",
+      fecha:"12/06/2026",
+      estado:"Moderado",
+      hectareas:120
     },
+
     {
-      id: 3,
-      zona: "Ucayali",
-      fecha: "08/06/2026",
-      estado: "Controlado",
-      hectareas: 45,
-    },
-    {
-      id: 4,
-      zona: "Puno",
-      fecha: "05/06/2026",
-      estado: "Moderado",
-      hectareas: 98,
-    },
+      id:3,
+      zona:"Ucayali",
+      fecha:"08/06/2026",
+      estado:"Controlado",
+      hectareas:45
+    }
+
   ]);
 
-  const eliminarReporte = (id) => {
-    if (window.confirm("¿Eliminar este reporte?")) {
-      setReportes(reportes.filter((r) => r.id !== id));
-    }
-  };
 
-  const verReporte = (reporte) => {
-    alert(`
-Zona: ${reporte.zona}
-Fecha: ${reporte.fecha}
-Estado: ${reporte.estado}
-Hectáreas afectadas: ${reporte.hectareas}
-    `);
-  };
 
-  const nuevoRegistro = () => {
-    const zona = prompt("Ingrese la zona:");
+  const eliminarReporte=(id)=>{
 
-    if (!zona) return;
-
-    const hectareas = prompt(
-      "Ingrese hectáreas afectadas:"
+    setReportes(
+      reportes.filter(
+        r=>r.id!==id
+      )
     );
 
-    const nuevo = {
-      id: reportes.length + 1,
-      zona,
-      fecha: new Date().toLocaleDateString(),
-      estado: "Moderado",
-      hectareas: hectareas || 0,
-    };
-
-    setReportes([...reportes, nuevo]);
   };
 
-  const exportarCSV = () => {
-    const encabezado =
-      "ID,Zona,Fecha,Estado,Hectareas\n";
 
-    const filas = reportes
-      .map(
-        (r) =>
-          `${r.id},${r.zona},${r.fecha},${r.estado},${r.hectareas}`
-      )
-      .join("\n");
 
-    const csv = encabezado + filas;
+  const nuevoRegistro=()=>{
 
-    const blob = new Blob([csv], {
-      type: "text/csv;charset=utf-8;",
+
+    const zona =
+    prompt("Ingrese zona");
+
+
+    if(!zona)return;
+
+
+
+    setReportes([
+
+      {
+
+        id:Date.now(),
+
+        zona,
+
+        fecha:new Date()
+        .toLocaleDateString(),
+
+        estado:"Moderado",
+
+        hectareas:50
+
+      },
+
+      ...reportes
+
+    ]);
+
+
+  };
+
+
+
+
+  const exportarCSV=()=>{
+
+
+    const texto =
+    "Zona,Fecha,Estado,Hectareas\n" +
+
+    reportes.map(r=>
+
+    `${r.zona},${r.fecha},${r.estado},${r.hectareas}`
+
+    ).join("\n");
+
+
+
+    const blob =
+    new Blob([texto],
+    {
+      type:"text/csv"
     });
 
+
+
     const url =
-      window.URL.createObjectURL(blob);
+    URL.createObjectURL(blob);
+
+
 
     const link =
-      document.createElement("a");
+    document.createElement("a");
 
-    link.href = url;
-    link.download =
-      "reportes-ecomine-peru.csv";
+    link.href=url;
+
+    link.download=
+    "reportes-ecomine.csv";
 
     link.click();
+
+
   };
 
-  return (
-    <div className="space-y-6">
 
-      <div className="flex justify-between items-center">
 
-        <div>
-          <h1 className="text-4xl font-bold">
-            Reportes Ambientales
-          </h1>
+return(
 
-          <p className="text-gray-500">
-            Gestión de reportes de minería ilegal
-          </p>
-        </div>
 
-        <div className="flex gap-3">
+<div className="reportes">
 
-          <button
-            onClick={nuevoRegistro}
-            className="bg-emerald-600 text-white px-5 py-3 rounded-xl hover:bg-emerald-700"
-          >
-            + Nuevo Registro
-          </button>
 
-          <button
-            onClick={exportarCSV}
-            className="bg-blue-600 text-white px-5 py-3 rounded-xl hover:bg-blue-700"
-          >
-            Exportar CSV
-          </button>
 
-        </div>
-      </div>
+<div className="reporte-header">
 
-      <div className="grid md:grid-cols-3 gap-6">
 
-        <div className="bg-white p-6 rounded-2xl shadow">
-          <h3 className="text-gray-500">
-            Reportes Totales
-          </h3>
+<div>
 
-          <p className="text-4xl font-bold mt-2">
-            {reportes.length}
-          </p>
-        </div>
+<h1>
+Reportes Ambientales
+</h1>
 
-        <div className="bg-white p-6 rounded-2xl shadow">
-          <h3 className="text-gray-500">
-            Casos Críticos
-          </h3>
 
-          <p className="text-4xl font-bold text-red-500 mt-2">
-            {
-              reportes.filter(
-                (r) => r.estado === "Crítico"
-              ).length
-            }
-          </p>
-        </div>
+<p>
+Gestión de reportes de minería ilegal
+</p>
 
-        <div className="bg-white p-6 rounded-2xl shadow">
-          <h3 className="text-gray-500">
-            Hectáreas Afectadas
-          </h3>
 
-          <p className="text-4xl font-bold mt-2">
-            {reportes.reduce(
-              (total, r) =>
-                total + Number(r.hectareas),
-              0
-            )}
-          </p>
-        </div>
+</div>
 
-      </div>
 
-      <div className="bg-white rounded-2xl shadow overflow-hidden">
 
-        <div className="p-6 border-b">
-          <h2 className="text-2xl font-bold">
-            Registros Recientes
-          </h2>
-        </div>
+<div className="acciones">
 
-        <table className="w-full">
 
-          <thead className="bg-gray-100">
+<button
+className="btn-nuevo"
+onClick={nuevoRegistro}
+>
++ Nuevo Reporte
+</button>
 
-            <tr>
-              <th className="text-left p-4">ID</th>
-              <th className="text-left p-4">Zona</th>
-              <th className="text-left p-4">Fecha</th>
-              <th className="text-left p-4">Estado</th>
-              <th className="text-left p-4">
-                Hectáreas
-              </th>
-              <th className="text-left p-4">
-                Acciones
-              </th>
-            </tr>
 
-          </thead>
+<button
+className="btn-exportar"
+onClick={exportarCSV}
+>
+Exportar CSV
+</button>
 
-          <tbody>
 
-            {reportes.map((r) => (
-              <tr
-                key={r.id}
-                className="border-b hover:bg-gray-50"
-              >
+</div>
 
-                <td className="p-4">
-                  {r.id}
-                </td>
 
-                <td className="p-4">
-                  {r.zona}
-                </td>
+</div>
 
-                <td className="p-4">
-                  {r.fecha}
-                </td>
 
-                <td className="p-4">
 
-                  <span
-                    className={`px-3 py-1 rounded-full text-white text-sm ${
-                      r.estado === "Crítico"
-                        ? "bg-red-500"
-                        : r.estado === "Moderado"
-                        ? "bg-yellow-500"
-                        : "bg-green-500"
-                    }`}
-                  >
-                    {r.estado}
-                  </span>
 
-                </td>
 
-                <td className="p-4">
-                  {r.hectareas}
-                </td>
+<div className="estadisticas">
 
-                <td className="p-4">
 
-                  <button
-                    onClick={() =>
-                      verReporte(r)
-                    }
-                    className="bg-blue-500 text-white px-3 py-1 rounded mr-2"
-                  >
-                    Ver
-                  </button>
 
-                  <button
-                    onClick={() =>
-                      eliminarReporte(r.id)
-                    }
-                    className="bg-red-500 text-white px-3 py-1 rounded"
-                  >
-                    Eliminar
-                  </button>
+<div className="card">
 
-                </td>
+<h3>
+Reportes Totales
+</h3>
 
-              </tr>
-            ))}
+<strong>
+{reportes.length}
+</strong>
 
-          </tbody>
+</div>
 
-        </table>
 
-      </div>
 
-    </div>
-  );
+
+<div className="card">
+
+<h3>
+Casos Críticos
+</h3>
+
+<strong className="rojo">
+
+{
+reportes.filter(
+r=>r.estado==="Crítico"
+).length
+}
+
+</strong>
+
+</div>
+
+
+
+
+<div className="card">
+
+<h3>
+Hectáreas Afectadas
+</h3>
+
+<strong>
+
+{
+reportes.reduce(
+(t,r)=>
+t+Number(r.hectareas),
+0
+)
+
+}
+
+</strong>
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+<div className="tabla-reportes">
+
+
+<table>
+
+
+<thead>
+
+<tr>
+
+<th>ID</th>
+
+<th>Zona</th>
+
+<th>Fecha</th>
+
+<th>Estado</th>
+
+<th>Hectáreas</th>
+
+<th>Acción</th>
+
+
+</tr>
+
+
+</thead>
+
+
+
+
+<tbody>
+
+
+{
+reportes.map(r=>(
+
+
+<tr key={r.id}>
+
+
+<td>
+{r.id}
+</td>
+
+
+<td>
+{r.zona}
+</td>
+
+
+<td>
+{r.fecha}
+</td>
+
+
+
+<td>
+
+<span
+className={
+r.estado==="Crítico"
+?
+"critico"
+:
+r.estado==="Moderado"
+?
+"moderado"
+:
+"controlado"
+}
+>
+
+{r.estado}
+
+</span>
+
+
+</td>
+
+
+
+<td>
+{r.hectareas} ha
+</td>
+
+
+
+<td>
+
+
+<button
+className="eliminar"
+onClick={()=>eliminarReporte(r.id)}
+>
+
+Eliminar
+
+</button>
+
+
+</td>
+
+
+
+</tr>
+
+
+))
+
+}
+
+
+
+</tbody>
+
+
+</table>
+
+
+</div>
+
+
+
+</div>
+
+
+);
+
+
 }

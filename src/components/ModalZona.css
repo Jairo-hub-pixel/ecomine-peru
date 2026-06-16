@@ -1,0 +1,180 @@
+.modal-fondo {
+
+  position: fixed;
+  inset: 0;
+
+  background: rgba(15,23,42,0.55);
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  backdrop-filter: blur(5px);
+
+  z-index:1000;
+
+}
+
+
+
+.modal-zona {
+
+  width:450px;
+
+  background:white;
+
+  padding:30px;
+
+  border-radius:20px;
+
+  box-shadow:
+  0 20px 40px rgba(0,0,0,.2);
+
+  animation: aparecer .3s ease;
+
+}
+
+
+
+@keyframes aparecer {
+
+  from {
+
+    transform:scale(.9);
+
+    opacity:0;
+
+  }
+
+  to {
+
+    transform:scale(1);
+
+    opacity:1;
+
+  }
+
+}
+
+
+
+.modal-zona h2 {
+
+  font-size:25px;
+
+  margin-bottom:25px;
+
+  color:#111827;
+
+}
+
+
+
+.modal-zona label {
+
+  display:block;
+
+  margin-top:15px;
+
+  margin-bottom:7px;
+
+  font-weight:600;
+
+  color:#374151;
+
+}
+
+
+
+.modal-zona input,
+.modal-zona select {
+
+
+  width:100%;
+
+  padding:13px;
+
+  border-radius:10px;
+
+  border:1px solid #d1d5db;
+
+  outline:none;
+
+  font-size:14px;
+
+}
+
+
+
+.modal-zona input:focus,
+.modal-zona select:focus {
+
+  border-color:#16a34a;
+
+}
+
+
+
+.modal-botones {
+
+  display:flex;
+
+  justify-content:flex-end;
+
+  gap:12px;
+
+  margin-top:30px;
+
+}
+
+
+
+.modal-botones button {
+
+  padding:12px 20px;
+
+  border:none;
+
+  border-radius:10px;
+
+  cursor:pointer;
+
+  font-weight:600;
+
+}
+
+
+
+.cancelar {
+
+  background:#e5e7eb;
+
+  color:#374151;
+
+}
+
+
+
+.cancelar:hover {
+
+  background:#d1d5db;
+
+}
+
+
+
+.guardar {
+
+  background:#16a34a;
+
+  color:white;
+
+}
+
+
+
+.guardar:hover {
+
+  background:#15803d;
+
+}
