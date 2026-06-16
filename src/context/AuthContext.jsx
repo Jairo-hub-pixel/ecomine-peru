@@ -16,7 +16,8 @@ import {
   signInWithPopup
 } from "firebase/auth";
 
-import { auth } from "../firebase";
+import { auth, db } from "../firebase";
+import { doc, setDoc } from "firebase/firestore";
 
 const AuthContext = createContext();
 
@@ -25,30 +26,33 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (usuario) => {
 
-    const unsubscribe = onAuthStateChanged(
-      auth,
-      (usuario) => {
+      if (usuario) {
 
-        if (usuario) {
+        // 🔥 GUARDAR / ACTUALIZAR USUARIO EN FIRESTORE
+        await setDoc(doc(db, "usuarios", usuario.uid), {
+          uid: usuario.uid,
+          nombre: usuario.displayName,
+          email: usuario.email,
+          foto: usuario.photoURL || null,
+          verificado: usuario.emailVerified,
+          lastLogin: new Date()
+        }, { merge: true });
 
-          setUser({
-            nombre: usuario.displayName,
-            email: usuario.email,
-            verificado: usuario.emailVerified
-          });
+        setUser({
+          nombre: usuario.displayName,
+          email: usuario.email,
+          verificado: usuario.emailVerified
+        });
 
-        } else {
-
-          setUser(null);
-
-        }
-
+      } else {
+        setUser(null);
       }
-    );
+
+    });
 
     return () => unsubscribe();
-
   }, []);
 
   const login = async (email, password) => {
@@ -64,9 +68,7 @@ export function AuthProvider({ children }) {
 
       if (!credenciales.user.emailVerified) {
 
-        alert(
-          "Debes verificar tu correo antes de iniciar sesión."
-        );
+        alert("Debes verificar tu correo antes de iniciar sesión.");
 
         await signOut(auth);
 
@@ -76,20 +78,13 @@ export function AuthProvider({ children }) {
       return true;
 
     } catch (error) {
-
       console.error(error);
-
       return false;
-
     }
 
   };
 
-  const register = async (
-    nombre,
-    email,
-    password
-  ) => {
+  const register = async (nombre, email, password) => {
 
     try {
 
@@ -102,31 +97,21 @@ export function AuthProvider({ children }) {
 
       await updateProfile(
         credenciales.user,
-        {
-          displayName: nombre
-        }
+        { displayName: nombre }
       );
 
-      await sendEmailVerification(
-        credenciales.user
-      );
+      await sendEmailVerification(credenciales.user);
 
-      alert(
-        "Cuenta creada. Revisa tu correo para verificarla."
-      );
+      alert("Cuenta creada. Revisa tu correo para verificarla.");
 
       await signOut(auth);
 
       return true;
 
     } catch (error) {
-
       console.error(error);
-
       alert(error.message);
-
       return false;
-
     }
 
   };
@@ -137,41 +122,40 @@ export function AuthProvider({ children }) {
 
       const provider = new GoogleAuthProvider();
 
-      await signInWithPopup(
-        auth,
-        provider
-      );
+      const result = await signInWithPopup(auth, provider);
+      const usuario = result.user;
+
+      // 🔥 GUARDAR USUARIO EN FIRESTORE
+      await setDoc(doc(db, "usuarios", usuario.uid), {
+        uid: usuario.uid,
+        nombre: usuario.displayName,
+        email: usuario.email,
+        foto: usuario.photoURL || null,
+        lastLogin: new Date()
+      }, { merge: true });
 
       return true;
 
     } catch (error) {
-
       console.error(error);
-
       return false;
-
     }
 
   };
 
   const logout = async () => {
-
     await signOut(auth);
-
     setUser(null);
-
   };
 
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        login,
-        register,
-        logout,
-        loginGoogle
-      }}
-    >
+    <AuthContext.Provider value={{
+      user,
+      login,
+      register,
+      logout,
+      loginGoogle
+    }}>
       {children}
     </AuthContext.Provider>
   );
